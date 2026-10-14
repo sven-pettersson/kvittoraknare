@@ -6,8 +6,7 @@
 
 | Verktyg      | Antal promptar | Följde din egna regel? | Testerna gröna? | Vad fick du rätta själv? |
 |--------------|----------------|-------------------------|-----------------|---------------------------|
-| Copilot      |                |                         |                 |                           |
+| Copilot      | 1              | Ja                      | Ja              | Inget                     |
 | Claude Code  |                |                         |                 |                           |
 | OpenCode     |                |                         |                 |                           |
-
 

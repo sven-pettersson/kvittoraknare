@@ -1,12 +1,22 @@
-def berakna_total(varor):
-    """Returnerar totalsumman inklusive moms, avrundad till två decimaler.
+DISCOUNT_CODE = "RABATT10"
+DISCOUNT_RATE = 0.10
 
-    varor: lista med tupler (namn, pris_exkl_moms, momssats),
-    där momssats anges som decimaltal, t.ex. 0.25 för 25 %.
+
+def berakna_total(varor, discount_code=None):
+    """Return the receipt total including VAT, rounded to two decimals.
+
+    ``varor`` is a list of tuples (name, price_excluding_vat, vat_rate),
+    where vat_rate is a decimal, e.g. 0.25 for 25%.
+    The RABATT10 discount is applied to prices before VAT is calculated.
     """
+    if discount_code is not None and discount_code != DISCOUNT_CODE:
+        raise ValueError("Invalid discount code")
+
+    discount_rate = DISCOUNT_RATE if discount_code == DISCOUNT_CODE else 0
     total = 0
-    for namn, pris, momssats in varor:
-        total += pris * (1 + momssats)
+    for name, price, vat_rate in varor:
+        discounted_price = price * (1 - discount_rate)
+        total += discounted_price * (1 + vat_rate)
     return round(total, 2)
 
 
