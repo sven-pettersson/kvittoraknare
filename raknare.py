@@ -1,12 +1,18 @@
-def berakna_total(varor):
+RABATTKODER = {"RABATT10": 0.10}
+
+
+def berakna_total(varor, rabattkod=None):
     """Returnerar totalsumman inklusive moms, avrundad till två decimaler.
 
     varor: lista med tupler (namn, pris_exkl_moms, momssats),
     där momssats anges som decimaltal, t.ex. 0.25 för 25 %.
+    rabattkod: valfri kod som ger rabatt på hela kvittot. Rabatten
+    dras på priset exklusive moms innan momsen räknas.
     """
+    rabatt = RABATTKODER.get(rabattkod, 0.0)
     total = 0
     for namn, pris, momssats in varor:
-        total += pris * (1 + momssats)
+        total += pris * (1 - rabatt) * (1 + momssats)
     return round(total, 2)
 
 
