@@ -54,6 +54,23 @@ def print_receipt(items):
     print(f"Totalt: {berakna_total(items):.2f} kr")
 
 
+VAT_RATES = frozenset({25, 12, 6})
+
+
+def vat_breakdown(items):
+    """Returnerar momsbelopp per momssats, t.ex. {25: 25.0, 12: 6.0}.
+
+    Raises ValueError om en vara har en momssats som inte finns i VAT_RATES.
+    """
+    breakdown = {}
+    for name, price, rate in items:
+        if rate not in VAT_RATES:
+            raise ValueError(f"Okänd momssats {rate} för {name}")
+        vat = price * rate / 100
+        breakdown[rate] = breakdown.get(rate, 0) + vat
+    return breakdown
+
+
 if __name__ == "__main__":
     kvitto = [
         ("Mjölk", 15.00, 0.12),

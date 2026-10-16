@@ -1,5 +1,5 @@
 import pytest
-from raknare import berakna_total, format_receipt, print_receipt
+from raknare import berakna_total, format_receipt, print_receipt, vat_breakdown
 
 class TestExample:
     def test_berakna_total(self):
@@ -78,3 +78,33 @@ class TestExample:
         receipt = format_receipt([("Item", 1.00, 6)])
 
         assert all(len(line) == 31 for line in receipt.splitlines()[1:])
+
+
+    def test_breakdown_of_vat_amounts(self):
+        items = [
+            ("Item A", 100.00, 25),
+            ("Item B", 50.00, 12),
+        ]
+
+        breakdown = vat_breakdown(items)
+
+        assert breakdown == {
+            25: 25.0,
+            12: 6.0
+        }
+
+    def test_breakdown_supports_all_vat_rates(self):
+        items = [
+            ("Item A", 100.00, 25),
+            ("Item B", 50.00, 12),
+            ("Item C", 200.00, 6),
+        ]
+
+        assert vat_breakdown(items) == {25: 25.0, 12: 6.0, 6: 12.0}
+
+    @pytest.mark.parametrize("rate", [0, 0.25, 10, 100])
+    def test_breakdown_raises_on_unknown_vat_rate(self, rate):
+        items = [("Item A", 100.00, rate)]
+
+        with pytest.raises(ValueError, match="Okänd momssats"):
+            vat_breakdown(items)
