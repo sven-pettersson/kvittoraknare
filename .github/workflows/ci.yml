@@ -1,0 +1,36 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [test, staging, main]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.14"
+      - run: pip install pytest
+      - run: pytest
+
+  ai-review:
+    # Feature branches must bring a /check-result review when code/ changes.
+    if: github.base_ref == 'test'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Require ai/reviews/check-result-*.md for code changes
+        run: |
+          base="origin/${{ github.base_ref }}"
+          changed=$(git diff --name-only "$base"...HEAD)
+          echo "$changed"
+          if echo "$changed" | grep -q '^code/'; then
+            if ! echo "$changed" | grep -qE '^ai/reviews/check-result-.*\.md$'; then
+              echo "::error::code/ har ändrats men ingen ai/reviews/check-result-*.md följer med. Kör /check-result."
+              exit 1
+            fi
+          fi

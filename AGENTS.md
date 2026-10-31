@@ -33,6 +33,14 @@ Ett litet program som räknar ut summa och moms för ett kvitto.
 - `ai/` committas tillsammans med ändringen.
 - Vid commit: uppdatera verktygets rad i tabellen i readme.md (lämna bedömningskolumnerna till mig).
 
+## Brancher och PR
+- Flöde: `feature/<namn>` → `test` → `staging` → `main` (merge till main = release, taggas `vX.Y.Z`).
+- Committa eller pusha aldrig direkt på `main`, `staging` eller `test` (hooken branch_guard stoppar det).
+- `/branch <namn>` skapar en arbetsgren från `test`.
+- `/pr` skapar en PR mot `test` med journal och granskning i PR-texten. Den mergar aldrig.
+- `/promote staging|main` skapar en befordrings-PR och föreslår en release-tagg för main.
+- CI (`.github/workflows/ci.yml`) kör pytest på PR:er och kräver en `ai/reviews/check-result-*.md` när `code/` ändras i PR:er mot `test`.
+
 ## Kommandon
 - Kör programmet: python code/src/raknare.py
 - Kör tester: pytest
